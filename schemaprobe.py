@@ -1,6 +1,6 @@
+from __future__ import unicode_literals
 
-__all__ = ['ensure', 'JsonProbe']
-
+import sys
 import functools
 import json
 try:
@@ -13,10 +13,24 @@ except ImportError:
     requests = None
 
 
-__version__ = '0.1'
+__version__ = '1.0.0.dev1'
+
+__all__ = ['ensure', 'JsonProbe']
 
 
-class JsonProbe:
+#--------------
+# Py2 compat
+#--------------
+PY2 = sys.version_info[0] == 2
+
+if PY2:
+    string_types = (str, unicode)
+else:
+    string_types = (str,)
+#--------------
+
+
+class JsonProbe(object):
     """
     An instance that knows how to perform validations against json-schema.
     """
@@ -53,7 +67,7 @@ class JsonProbe:
 
         :param input: json-encoded text or python datastructures.
         """
-        if isinstance(input, str):
+        if isinstance(input, string_types):
             return json.loads(input)
         else:
             return input
@@ -75,8 +89,8 @@ def ensure(probe):
     return ensure_decorator
 
 
-class TestCaseMixin:
-    def assertSchemaIsValid(self, probe, resource_url, auth=None, msg=None):
+class TestCaseMixin(object):
+    def assertSchemaIsValid(self, probe, resource_url, msg=None):
         api_sample = requests.get(resource_url)
 
         if not probe.validate(api_sample.json()):
