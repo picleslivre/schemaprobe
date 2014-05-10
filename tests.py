@@ -2,7 +2,7 @@ import json
 import unittest
 from unittest import mock
 
-from schemaprobe import JsonProbe, ensure
+from schemaprobe import JsonProbe, ensure, TestCaseMixin
 
 #------------------
 # Fixtures
@@ -103,6 +103,8 @@ class EnsureDecoratorTests(unittest.TestCase):
         self.assertEqual(FixtureFactory.__name__, 'FixtureFactory')
 
 
-#class FooBar(SchemaProbeMixin, unittest.TestCase):
-#    def test_foo(self):
-#        self.assertSchemaIsValid(JsonProbe(json_schema), 'http://...', auth=Auth)
+class FooBar(TestCaseMixin, unittest.TestCase):
+    def test_foo(self):
+        self.assertSchemaIsValid(JsonProbe(json_schema),
+                                 'https://btc-e.com/api/2/btc_usd/trades')
+

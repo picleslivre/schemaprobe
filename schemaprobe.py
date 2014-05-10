@@ -7,6 +7,13 @@ try:
     import jsonschema
 except ImportError:
     jsonschema = None
+try:
+    import requests
+except ImportError:
+    requests = None
+
+
+__version__ = '0.1'
 
 
 class JsonProbe:
@@ -35,7 +42,7 @@ class JsonProbe:
 
         try:
             jsonschema.validate(data, self.schema)
-        except self._jsonschema.exceptions.ValidationError:
+        except self._jsonschema.ValidationError:
             return False
         else:
             return True
@@ -66,4 +73,12 @@ def ensure(probe):
                 raise TypeError('Returned data does not conform with the given schema.')
         return wrapper
     return ensure_decorator
+
+
+class TestCaseMixin:
+    def assertSchemaIsValid(self, probe, resource_url, auth=None, msg=None):
+        api_sample = requests.get(resource_url)
+
+        if not probe.validate(api_sample.json()):
+            raise self.failureException(msg or 'Schema is invalid.')
 
