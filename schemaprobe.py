@@ -18,16 +18,16 @@ __version__ = '1.0.0.dev1'
 __all__ = ['ensure', 'JsonProbe']
 
 
-#--------------
+# --------------
 # Py2 compat
-#--------------
+# --------------
 PY2 = sys.version_info[0] == 2
 
 if PY2:
     string_types = (str, unicode)
 else:
     string_types = (str,)
-#--------------
+# --------------
 
 
 class JsonProbe(object):
@@ -95,4 +95,3 @@ class TestCaseMixin(object):
 
         if not probe.validate(api_sample.json()):
             raise self.failureException(msg or 'Schema is invalid.')
-
